@@ -20,12 +20,9 @@ class AMS(object):
         self.save_dir = os.path.join(os.getcwd(), "data")
         self.sleep = sleep
 
+    def __enter__(self):
         self.vdisplay = Xvfb()
         self.vdisplay.start()
-        self._init_driver()
-
-
-    def _init_driver(self):
 
         if not os.path.exists(self.download_dir):
             os.makedirs(self.download_dir)
@@ -38,8 +35,9 @@ class AMS(object):
 
         self.driver = webdriver.Firefox(firefox_profile=fp)
         self.driver = make_patient(self.driver)
+        return self
 
-    def kill(self):
+    def __exit__(self):
         self.driver.close()
         self.vdisplay.stop()
 

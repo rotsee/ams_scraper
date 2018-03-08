@@ -55,40 +55,38 @@ else:
     if folder[-1] is not "/":
         folder += "/"
 
-scraper = AMS(sleep=sleep)
+with AMS(sleep=sleep) as scraper:
 
-date_start = datetime.strptime(ui.args.date_start, "%Y-%m-%d")
-if ui.args.date_end:
-    date_end = datetime.strptime(ui.args.date_end, "%Y-%m-%d")
-else:
-    date_end = datetime.now()
-
-
-for dt in rrule.rrule(rrule.MONTHLY, dtstart=date_start, until=date_end):
-    file_base = folder + "ams-%s-%02d" % (dt.year, dt.month)
-
-    # Get all
-    file_name = file_base + "-all.csv"
-    if file_exists(file_name):
-        print "%s already exists" % file_name
+    date_start = datetime.strptime(ui.args.date_start, "%Y-%m-%d")
+    if ui.args.date_end:
+        date_end = datetime.strptime(ui.args.date_end, "%Y-%m-%d")
     else:
-        data = scraper.get_overview(year=dt.year, month=dt.month)
-        data.save_as(file_name)
+        date_end = datetime.now()
 
-    # Get foreign born
-    file_name = file_base + "-foreignborn.csv"
-    if file_exists(file_name):
-        print "%s already exists" % file_name
-    else:
-        data = scraper.get_overview(year=dt.year, month=dt.month, foreign_only=True)
-        data.save_as(file_name)
 
-    # Get youth
-    file_name = file_base + "-youth.csv"
-    if file_exists(file_name):
-        print "%s already exists" % file_name
-    else:
-        data = scraper.get_overview(year=dt.year, month=dt.month, youth_only=True)
-        data.save_as(file_name)
+    for dt in rrule.rrule(rrule.MONTHLY, dtstart=date_start, until=date_end):
+        file_base = folder + "ams-%s-%02d" % (dt.year, dt.month)
 
-scraper.kill()  # TODO: Ersätt med with `scraper.start():`, så slipper vi minnesläckor
+        # Get all
+        file_name = file_base + "-all.csv"
+        if file_exists(file_name):
+            print "%s already exists" % file_name
+        else:
+            data = scraper.get_overview(year=dt.year, month=dt.month)
+            data.save_as(file_name)
+
+        # Get foreign born
+        file_name = file_base + "-foreignborn.csv"
+        if file_exists(file_name):
+            print "%s already exists" % file_name
+        else:
+            data = scraper.get_overview(year=dt.year, month=dt.month, foreign_only=True)
+            data.save_as(file_name)
+
+        # Get youth
+        file_name = file_base + "-youth.csv"
+        if file_exists(file_name):
+            print "%s already exists" % file_name
+        else:
+            data = scraper.get_overview(year=dt.year, month=dt.month, youth_only=True)
+            data.save_as(file_name)
