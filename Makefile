@@ -2,6 +2,7 @@
 .PHONY: clean-pyc clean-build
 
 install:
+	sudo apt install xvfb
 	virtualenv env
 	source env/bin/activate
 	pip install -r requirements.txt

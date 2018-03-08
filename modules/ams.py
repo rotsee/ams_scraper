@@ -9,6 +9,8 @@ from tables import DetailedTable, OverviewTable, DataValidationError
 from utils import patiently
 from errors import XPathError, DownloadError, PageNotReady, EmptyFileError
 import pdb
+from xvfbwrapper import Xvfb
+
 
 class AMS(object):
     def __init__(self, sleep=1.5):
@@ -18,6 +20,8 @@ class AMS(object):
         self.save_dir = os.path.join(os.getcwd(), "data")
         self.sleep = sleep
 
+        self.vdisplay = Xvfb()
+        self.vdisplay.start()
         self._init_driver()
 
 
@@ -34,6 +38,10 @@ class AMS(object):
 
         self.driver = webdriver.Firefox(firefox_profile=fp)
         self.driver = make_patient(self.driver)
+
+    def kill(self):
+        self.driver.close()
+        self.vdisplay.stop()
 
     def _open_page(self, url, attempt=0):
         d = self.driver

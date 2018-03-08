@@ -1,3 +1,4 @@
+# encoding: utf-8
 from modules.ams import AMS
 from modules.tables import OverviewTable
 from modules.utils import file_exists, merge_csv_files
@@ -70,15 +71,15 @@ for dt in rrule.rrule(rrule.MONTHLY, dtstart=date_start, until=date_end):
     file_name = file_base + "-all.csv"
     if file_exists(file_name):
         print "%s already exists" % file_name
-    else: 
+    else:
         data = scraper.get_overview(year=dt.year, month=dt.month)
         data.save_as(file_name)
-    
+
     # Get foreign born
     file_name = file_base + "-foreignborn.csv"
     if file_exists(file_name):
         print "%s already exists" % file_name
-    else: 
+    else:
         data = scraper.get_overview(year=dt.year, month=dt.month, foreign_only=True)
         data.save_as(file_name)
 
@@ -86,8 +87,8 @@ for dt in rrule.rrule(rrule.MONTHLY, dtstart=date_start, until=date_end):
     file_name = file_base + "-youth.csv"
     if file_exists(file_name):
         print "%s already exists" % file_name
-    else: 
+    else:
         data = scraper.get_overview(year=dt.year, month=dt.month, youth_only=True)
         data.save_as(file_name)
 
-scraper.driver.close()
+scraper.kill()  # TODO: Ersätt med with `scraper.start():`, så slipper vi minnesläckor
