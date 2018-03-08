@@ -37,7 +37,7 @@ class AMS(object):
         self.driver = make_patient(self.driver)
         return self
 
-    def __exit__(self):
+    def __exit__(self, *args):
         self.driver.close()
         self.vdisplay.stop()
 
@@ -221,8 +221,6 @@ class AMS(object):
         downloaded_file = self._download_file(xpath)
         data = patiently(parse_downloaded, IndexError)
         data.verify(year=year, month=month, youth_only=youth_only, foreign_only=foreign_only)
-
-
 
         return data
 
